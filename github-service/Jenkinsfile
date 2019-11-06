@@ -1,0 +1,178 @@
+import groovy.json.JsonSlurper
+
+node {
+
+    withMaven(maven:'maven-3.6.2') {
+
+        stage('Checkout') {
+            git url: 'https://github.com/banibrata07/sample-spring-microservices.git', credentialsId: 'github-banibrataaws', branch: 'master'
+        }
+
+        stage('Build') {
+            sh 'mvn clean install'
+            def pom = readMavenPom file:'pom.xml'
+            print pom.version
+            env.version = pom.version
+        }
+        }
+        
+        stage('S3 transfer') {
+            script {
+             s3Upload consoleLogLevel: 'INFO', dontWaitForConcurrentBuildCompletion: false, entries: [[bucket: 'aws-s3artifact-bani/account', excludedFile: '', flatten: true, gzipFiles: false, keepForever: false, managedArtifacts: false, noUploadOnFailure: false, selectedRegion: 'us-east-1', showDirectlyInBrowser: false, sourceFile: '**/account-service/target/*.jar', storageClass: 'STANDARD', uploadFromSlave: false, useServerSideEncryption: false], [bucket: 'aws-s3artifact-bani/account', excludedFile: '', flatten: true, gzipFiles: false, keepForever: false, managedArtifacts: false, noUploadOnFailure: false, selectedRegion: 'us-east-1', showDirectlyInBrowser: false, sourceFile: '**/account-service/Dockerfile', storageClass: 'STANDARD', uploadFromSlave: false, useServerSideEncryption: false]], pluginFailureResultConstraint: 'FAILURE', profileName: 'aws-s3artifact-bani', userMetadata: []
+            }
+        }
+        
+       /*  stage('Autoscaling Scale Out Instance Deployment') {
+           def restResponse = 'aws autoscaling update-auto-scaling-group --auto-scaling-group-name appServerASG --min-size 2 --max-size 4 --desired-capacity 4  --health-check-grace-period 0 --default-cooldown 0 --region us-east-1'
+           def proc = restResponse.execute()
+           proc.waitFor()              
+           def output = proc.in.text
+           def exitcode= proc.exitValue()
+           def error = proc.err.text
+
+           if (error) {
+               println "Std Err: ${error}"
+               println "Process exit code: ${exitcode}"
+               return exitcode
+           }
+           echo 'success from Autoscaling Scale Out Instance Deployment'
+        }
+        
+        stage('Sleeping'){
+         sleep 120
+         echo 'waiting 120 sec'
+        }
+
+        
+       
+         stage('Autoscaling Scale In Instance Deployment') {
+           def restResponse = 'aws autoscaling update-auto-scaling-group --auto-scaling-group-name appServerASG --min-size 2 --max-size 4 --desired-capacity 2  --health-check-grace-period 30 --default-cooldown 120 --region us-east-1'
+           def proc = restResponse.execute()
+           proc.waitFor()              
+           def output = proc.in.text
+           def exitcode= proc.exitValue()
+           def error = proc.err.text
+
+           if (error) {
+               println "Std Err: ${error}"
+               println "Process exit code: ${exitcode}"
+               return exitcode
+           }
+            echo 'success from Autoscaling Scale In Instance Deployment'
+        }
+       
+        stage('Wait Time Server restart'){
+         sleep 120
+         echo 'waiting 120 sec'
+        }*/
+        
+        /* stage('restart Server') {
+           def restResponse = 'aws autoscaling describe-auto-scaling-groups --auto-scaling-group-names appServerASG  --region us-east-1 --query AutoScalingGroups[].Instances[].InstanceId --output json'
+           def proc = restResponse.execute()
+           proc.waitFor()              
+           def output = proc.in.text
+           def exitcode= proc.exitValue()
+           def error = proc.err.text
+
+           if (error) {
+               println "Std Err: ${error}"
+               println "Process exit code: ${exitcode}"
+               return exitcode
+           }
+           def list = new JsonSlurper().parseText(output)
+           list.each { 
+           def instance = it
+           def command =  'aws ec2 stop-instances --instance-ids replace --region us-east-1'
+           command = command.replaceAll('replace',instance)
+           proc = command.execute()
+           proc.waitFor()              
+           output = proc.in.text
+           exitcode= proc.exitValue()
+           error = proc.err.text
+
+           if (error) {
+               println "Std Err: ${error}"
+               println "Process exit code: ${exitcode}"
+               return exitcode
+           }
+           }
+            
+        }*/
+        /*
+         stage('SSH transfer') {
+         script {
+          sshPublisher(
+           continueOnError: false, failOnError: true,
+           publishers: [
+            sshPublisherDesc(
+             configName: "docker_host_app",
+             verbose: true,
+             transfers: [
+              sshTransfer(
+               sourceFiles: "account-service/Dockerfile",
+               removePrefix: "account-service",
+               remoteDirectory: "//usr//account",
+              ),
+              sshTransfer(
+               sourceFiles: "account-service/target/account-service.jar",
+               removePrefix: "account-service/target/",
+               remoteDirectory: "//usr//account",
+              )
+             ])
+           ])
+         }
+        }
+        stage('SSH remove Previous image') {
+         script {
+          sshPublisher(
+           continueOnError: false, failOnError: true,
+           publishers: [
+            sshPublisherDesc(
+             configName: "docker_host_app",
+             verbose: true,
+             transfers: [
+              sshTransfer(
+               execCommand: "docker stop account;docker rm -f account;docker image rm -f account;"
+              )
+             ])
+           ])
+         }
+        }
+        stage('build image') {
+         script {
+          sshPublisher(
+           continueOnError: false, failOnError: true,
+           publishers: [
+            sshPublisherDesc(
+             configName: "docker_host_app",
+             verbose: true,
+             transfers: [
+              sshTransfer(
+               execCommand: "cd /usr/account;docker build -t account ."
+              )
+             ])
+           ])
+         }
+        }
+        stage('Run image') {
+         script {
+          sshPublisher(
+           continueOnError: false, failOnError: true,
+           publishers: [
+            sshPublisherDesc(
+             configName: "docker_host_app",
+             verbose: true,
+             transfers: [
+              sshTransfer(
+               execCommand: "docker run -d --network=host --name account -p 2222:2222 account;"
+              )
+             ])
+           ])
+         }
+        }*/
+        stage ('Final') {
+            build job: 'customer-service-pipeline', wait: false
+        }  
+    
+
+}
