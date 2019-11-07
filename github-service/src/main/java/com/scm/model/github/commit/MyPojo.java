@@ -1,8 +1,5 @@
-package com.github.model;
-import com.github.model.Commit;
-import com.github.model.Parents;
-import com.github.model.ParentAuthor;
-import com.github.model.ParentCommitter;
+package com.scm.model.github.commit;
+import com.scm.model.github.commit.*;
 import java.util.*;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;

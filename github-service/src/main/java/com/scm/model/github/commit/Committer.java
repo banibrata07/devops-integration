@@ -1,4 +1,4 @@
-package com.github.model;
+package com.scm.model.github.commit;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.io.Serializable;

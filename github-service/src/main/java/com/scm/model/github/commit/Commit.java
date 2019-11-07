@@ -1,6 +1,5 @@
-package com.github.model;
-import com.github.model.Committer;
-import com.github.model.Author;
+package com.scm.model.github.commit;
+import com.scm.model.github.commit.*;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

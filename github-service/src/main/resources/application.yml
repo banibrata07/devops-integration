@@ -11,6 +11,6 @@ spring:
       org.springframework: WARN
       org.hibernate: WARN
   activemq:
-    broker-url: tcp://localhost:61616
+    broker-url: tcp://172.31.80.41:61616
     user: admin
     password: admin

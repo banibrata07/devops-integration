@@ -1,4 +1,4 @@
-package com.github.api;
+package com.scm.api;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -7,7 +7,7 @@ import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
 @EnableJms
-@ComponentScan({ "com.github.api.*,com.github.configuration.*,com.github.model.*,com.github.service.*" })
+@ComponentScan({ "com.scm.api,com.scm.configuration,com.scm.model.github.commit,com.scm.service" })
 public class ApiApplication {
 
 	public static void main(String[] args) {

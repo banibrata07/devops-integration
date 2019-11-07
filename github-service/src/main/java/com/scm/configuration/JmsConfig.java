@@ -1,16 +1,22 @@
-package com.github.configuration;
+package com.scm.configuration;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Bean;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
+import org.springframework.beans.factory.annotation.Value;
 
 @Configuration
 public class JmsConfig {
 
-	String BROKER_URL = "tcp://localhost:61616"; 
-	String BROKER_USERNAME = "admin"; 
-	String BROKER_PASSWORD = "admin";
+	@Value("${spring.activemq.broker-url}")
+	String BROKER_URL;
+	
+	@Value("${spring.activemq.user}")
+	String BROKER_USERNAME; 
+	
+	@Value("${spring.activemq.password}")
+	String BROKER_PASSWORD;
 	
 	@Bean
 	public ActiveMQConnectionFactory connectionFactory(){
@@ -18,6 +24,7 @@ public class JmsConfig {
 	    connectionFactory.setBrokerURL(BROKER_URL);
 	    connectionFactory.setPassword(BROKER_USERNAME);
 	    connectionFactory.setUserName(BROKER_PASSWORD);
+	    connectionFactory.setTrustAllPackages(true);
 	    return connectionFactory;
 	}
 

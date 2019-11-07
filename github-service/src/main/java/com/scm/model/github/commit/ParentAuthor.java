@@ -1,17 +1,14 @@
-package com.github.model;
+package com.scm.model.github.commit;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.io.Serializable;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class ParentCommitter implements Serializable{
+public class ParentAuthor  implements Serializable{
 
     private static final long serialVersionUID = 1L;
-  
+    
     @JsonProperty("gists_url")
     private String gists_url;
 
@@ -66,7 +63,7 @@ public class ParentCommitter implements Serializable{
     @JsonProperty("organizations_url")
     private String organizations_url;
     
-    public ParentCommitter(){
+    public ParentAuthor(){
         
     }
 
