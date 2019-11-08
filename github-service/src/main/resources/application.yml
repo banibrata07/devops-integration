@@ -14,3 +14,15 @@ spring:
     broker-url: tcp://172.31.80.41:61616
     user: admin
     password: admin
+
+scm:
+  github:
+    commit:
+      url: https://api.github.com/repos/userReplace/repo-replace/commits?sha=shaReplace
+    branch:
+      url: https://api.github.com/repos/userReplace/repo-replace/branches
+  gitlab:
+    commit:
+      url: https://api.github.com/repos/userReplace/repo-replace/commits
+    branch:
+      url: https://api.github.com/repos/userReplace/repo-replace/branches
