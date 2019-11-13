@@ -11,9 +11,16 @@ spring:
       org.springframework: WARN
       org.hibernate: WARN
   activemq:
-    broker-url: tcp://172.31.80.41:61616
+    broker-url: tcp://172.31.88.3:61616
     user: admin
     password: admin
+  data:
+    mongodb:
+      host: 172.31.89.54
+      port: 27017
+      database: scmDetails
+      repositories:
+        enabled: true 
 
 scm:
   github:

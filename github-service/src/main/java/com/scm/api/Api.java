@@ -45,6 +45,9 @@ import org.springframework.jms.support.converter.MessageConverter;
 import org.springframework.jms.support.converter.MessageType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import com.scm.repository.*;
+import com.scm.entity.*;
+
 
 @RestController
 public class Api {
@@ -58,12 +61,15 @@ public class Api {
 	@Value("${scm.github.branch.url}")
 	String githubBranchUrl;
 	
+	
+	@Autowired
+	private CommitDtlsRepository repository;
 
 	@RequestMapping(value="/scm/{scmsource}/{user}/{repo}",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
 	public List<MyPojo> findCommitInfo(@PathVariable("user") String user,@PathVariable("scmsource") String scmsource,@PathVariable("repo") String repo) {
 		String sourceScm = scmsource;
-		String output="test";
+		String output= null;
 		String outputText="";
 		 MyPojo  pojo = null;
 		 List<MyPojo> pojoList = null;
@@ -105,6 +111,7 @@ public class Api {
 				
 				for(BranchDtls branch : branchDtlsList){
 					System.out.println(branch);
+					
 					String newUrl = urlStr.replace("shaReplace",branch.getCommit().getSha());
 					url = new URL(newUrl);
 					conn = (HttpURLConnection) url.openConnection();
@@ -129,16 +136,18 @@ public class Api {
 			    	 output = output.replace("\n","\\n");
 			    
 			    	 System.out.println("----------------------------------------------------------------------------------------------------");
-			    	 System.out.println(output);
+			    	 //System.out.println(output);
 		    
-		    
+		    		repository.deleteAll();
 		     
 
 		        	try {
 		        		pojoList = mapper.readValue(output, new TypeReference<List<MyPojo>>(){});
-						/*for(MyPojo commit : pojoList){
-							System.out.println(commit);
-						}*/
+						for(MyPojo commit : pojoList){
+							for(com.scm.model.github.commit.Commit commitDtls:commit.getCommit()){
+								repository.save(new CommitEntity(scmsource, repo,branch.getName(),commitDtls.getCommitter().getName(),commitDtls.getMessage(),commit.getSha(),commitDtls.getCommitter().getDate()));
+							}
+						}
 		
 						System.out.println("---------------------------Send Message------------------------------------------");
 						jmsTemplate.convertAndSend("inbound.topic", pojoList);
@@ -149,7 +158,7 @@ public class Api {
 				}
 			
 		
-			
+					//repository.deleteAll();
 	        
 	        
 				 /*   String developerJson="{\"name\":\"test\",\"commit\":{\"id\":\"5464654\",\"short_id\":\"898979\",\"created_at\":\"2019-05-09\",\"parent_ids\":[\"ghg465dvdv\"],\"title\":\"test\",\"message\":\"test message\",\"author_name\":\"test\",\"author_email\":\"test@gmail.com\",\"author_date\":\"2019-05-08\",\"committer_name\":\"test\",\"committed_date\":\"2019-06-07\"},\"merged\":true,\"protected\":true,\"developers_can_push\":false,\"developers_can_merge\":false,\"can_push\":false,\"default\":false}";
