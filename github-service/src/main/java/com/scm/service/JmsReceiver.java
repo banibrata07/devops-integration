@@ -27,7 +27,7 @@ public class JmsReceiver{
     	String response = null;
     	if(jsonMessage instanceof ObjectMessage) {
     		ObjectMessage objectMessage = (ObjectMessage) jsonMessage;
-    		 System.out.println(objectMessage);
+    		 //System.out.println(objectMessage);
     		 List<MyPojo> pojoList = (List<MyPojo>) objectMessage.getObject();
     	    System.out.println("----------------------------Received Message----------------------------");
     	    for(MyPojo pojo : pojoList){

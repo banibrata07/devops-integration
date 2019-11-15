@@ -30,8 +30,7 @@ public class CommitEntity {
     @Override
     public String toString() {
         return String.format(
-                "commitEntity[id=%s, scmName='%s', repositoryName='%s, branchName='%s, commitId='%s, timestamp='%s']",
-                id, scmName, repositoryName,branchName,commitId,timestamp);
+                "commitEntity[id=%s, scmName='%s', repositoryName='%s, branchName='%s, commitId='%s, timestamp='%s']",id, scmName, repositoryName,branchName,commitId,timestamp);
     }
 
 }

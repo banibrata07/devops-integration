@@ -26,10 +26,40 @@ scm:
   github:
     commit:
       url: https://api.github.com/repos/userReplace/repo-replace/commits?sha=shaReplace
+    commitPath:
+      url: https://api.github.com/repos/userReplace/repo-replace/commits?path=folderName&recursive=1
     branch:
       url: https://api.github.com/repos/userReplace/repo-replace/branches
   gitlab:
     commit:
       url: https://api.github.com/repos/userReplace/repo-replace/commits
+    commitPath:
+      url: https://api.github.com/repos/userReplace/repo-replace/commits?path=folderName&recursive=1
     branch:
       url: https://api.github.com/repos/userReplace/repo-replace/branches
+      
+
+repos:
+  environment: dev
+  repo:
+  - monorepo: true
+    multirepo: false
+    name: workspace-test
+    projects:
+    - name: folderone
+      path: folderone
+    - name: foldertwo
+      path: foldertwo
+  - monorepo: true
+    multirepo: false
+    name: sample-spring-microservices
+    projects:
+    - name: account-service
+      path: account-service
+    - name: customer-service
+      path: customer-service
+    - name: discovery-service
+      path: discovery-service
+    - name: gateway-service
+      path: gateway-service
+          
